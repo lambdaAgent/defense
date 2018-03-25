@@ -2,8 +2,12 @@ import { h, Component } from 'preact';
 import PropTypes from 'prop-types';
 import { connect } from 'preact-redux';
 
-import main from './logic/mainLogic.js';
+import main, { init } from './logic/mainLogic.js';
 import render from './logic/renderLogic.js';
+
+// components
+import GlobalMap from '../../components/GlobalMap/GlobalMap';
+import Player from '../../components/Player/Player';
 
 class HomeContent extends Component {
     static propTypes = {
@@ -17,64 +21,49 @@ class HomeContent extends Component {
     componentDidMount(){
         // loop main logic here
         const self = this;
+        const { dispatch, allReducers } = this.props;
         function loop(){
-            const { dispatch, allReducers } = self.props;
-            main({ dispatch, allReducers })
+            main(self)
                 .then(res => {
-                    render({dispatch, allReducers});  
-                    setTimeout(() => requestAnimationFrame(loop), 20);
+                    render(self);  
+                    setTimeout(() => requestAnimationFrame(loop), 15);
                 })
         }
-        requestAnimationFrame(loop)
+
+        init({ dispatch, allReducers })
+            .then(res => {
+                render(self);
+                setTimeout(requestAnimationFrame(loop), 215)
+            })
     }
 
     render(){
-        const { worldReducer } = this.props.allReducers;
+        const { worldReducer, PlayerReducer } = this.props.allReducers;
         let { map:globalMap, system } = worldReducer;
         globalMap = Array.isArray(globalMap) && globalMap.length > 0 ? globalMap : null;
-        console.log(globalMap);
+        const Players = Array.isArray(globalMap) && globalMap.length > 0 ? PlayerReducer : null;
         const style = {
             width: system.width,
             height: system.height,
             border: '1px solid black',
             display: 'flex',
+            position: 'relative',
             flexDirection: 'column',
-        }
-        const rowStyle={
-            display: 'flex',
-        }
-
-        const cellStyle = {
-            width: system.cell.cellStyle.width,
-            height: system.cell.cellStyle.height,
-            border: '1px dashed grey'
         }
         return(
             <div style={style}>
-              {
-                globalMap && globalMap.map((row, rowIndex) => {
-                    return (
-                        <div 
-                        style={rowStyle}
-                          key={'row'+rowIndex}
-                          id={'row'+rowIndex}
-                        >
-                            {
-                                row.map((value, columnIndex) => {
-                                    const id = `cell${rowIndex},${columnIndex}`;
-                                    return (
-                                      <div 
-                                      id={id} key={id}
-                                      style={cellStyle}>
-                                          {value}
-                                      </div>
-                                    );
-                                  })
-                            }
-                        </div>
-                    )
-                })
-              }
+                <GlobalMap 
+                    systemData={system}
+                    data={globalMap}
+                />
+                {
+                    Players && Players.map((pl, plIndex) => {
+                        return <Player 
+                            key={pl.key} id={pl.key}
+                            index={pl.indexInPlayerReducers}
+                        />
+                    })
+                }
             </div>
         )
     }

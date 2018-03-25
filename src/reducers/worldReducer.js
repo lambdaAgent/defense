@@ -7,7 +7,7 @@ import { deepCloneObject } from '../shared/util';
 
 export let GLOBAL_MAP = [
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
+    [0, 1, 1, 1, 1, 0, 0, 0, 0, 0 ],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ],
@@ -46,7 +46,7 @@ function worldReducer(state=initState, action){
         break;
 
         case 'RENDER_ALL':
-            state = deepCloneObject(action.worldReducer);
+            state = Object.assign({}, action.worldReducer);
         break;
     }
 

@@ -1,5 +1,5 @@
 export const deepCloneObject = function deepCloneObject(obj, options) {
-    const excludeKey = options && options.excludeKey;
+    const excludeKey = options ? options.excludeKey : 'htmlcomponent';
     if (obj === null || typeof obj !== 'object') {
       return obj;
     }

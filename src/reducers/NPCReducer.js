@@ -33,7 +33,7 @@ const NPCState = [];
 export function NPCReducer(state = NPCState, action){
     switch(action.type){
         case 'RENDER_ALL':
-            state = deepCloneObject(action.NPCReducer);
+            state = state.slice();
         break;
     }
 
