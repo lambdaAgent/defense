@@ -30,12 +30,51 @@ class HomeContent extends Component {
 
     render(){
         const { worldReducer } = this.props.allReducers;
-        console.log(this.props);
-        console.log(worldReducer)
+        let { map:globalMap, system } = worldReducer;
+        globalMap = Array.isArray(globalMap) && globalMap.length > 0 ? globalMap : null;
+        console.log(globalMap);
+        const style = {
+            width: system.width,
+            height: system.height,
+            border: '1px solid black',
+            display: 'flex',
+            flexDirection: 'column',
+        }
+        const rowStyle={
+            display: 'flex',
+        }
+
+        const cellStyle = {
+            width: system.cell.cellStyle.width,
+            height: system.cell.cellStyle.height,
+            border: '1px dashed grey'
+        }
         return(
-            <div>
-                {worldReducer.timeString}
-               asdfasfda
+            <div style={style}>
+              {
+                globalMap && globalMap.map((row, rowIndex) => {
+                    return (
+                        <div 
+                        style={rowStyle}
+                          key={'row'+rowIndex}
+                          id={'row'+rowIndex}
+                        >
+                            {
+                                row.map((value, columnIndex) => {
+                                    const id = `cell${rowIndex},${columnIndex}`;
+                                    return (
+                                      <div 
+                                      id={id} key={id}
+                                      style={cellStyle}>
+                                          {value}
+                                      </div>
+                                    );
+                                  })
+                            }
+                        </div>
+                    )
+                })
+              }
             </div>
         )
     }

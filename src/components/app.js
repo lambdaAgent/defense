@@ -30,7 +30,7 @@ export default class App extends Component {
 
 	render() {
 		return (
-			<div style={style} id="app">
+			<div id="app">
 				<Router onChange={this.handleRoute}>
 					<Home path="/" />
 					<Profile path="/profile/" user="me" />
